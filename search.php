@@ -2,7 +2,7 @@
 session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
-if (strlen($_SESSION['vamsaid']==0)) {
+if (strlen($_SESSION['vamsid']==0)) {
   header('location:logout.php');
   } else{
 
@@ -14,7 +14,7 @@ if (strlen($_SESSION['vamsaid']==0)) {
 
 <head>
   
-    <title>Vehicle Break Down Assistance Management System: Search Request</title>
+    <title>Garbage Management System: Search Request</title>
 
     <link rel="stylesheet" href="../assets/vendor/themify-icons/themify-icons.css">
     <link rel="stylesheet" href="../assets/vendor/fontawesome/css/font-awesome.min.css">
@@ -35,7 +35,7 @@ if (strlen($_SESSION['vamsaid']==0)) {
 
         <div class="page">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <a class="navbar-brand" href="javascript:void(0);">Search Request</a>
+                <a class="navbar-brand" href="javascript:void(0);">Search Order</a>
             </nav>
             <div class="container-fluid">            
                 <div class="row clearfix">
@@ -62,7 +62,7 @@ if(isset($_POST['search']))
 $sdata=$_POST['searchdata'];
   ?>
   <h4 align="center">Result against "<?php echo $sdata;?>" keyword </h4>
-                                     <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                                    <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                                         <thead>
                                             <tr>
                                                <th>S.No</th>
@@ -89,7 +89,7 @@ $sdata=$_POST['searchdata'];
                                             <tr>
                                                <?php
                                                $did=$_SESSION['vamsdid'];
-$sql="SELECT * from  tblbin where BinID like '%$sdata%'";
+$sql="SELECT * from  tblbin where BinID like '%$sdata%' DriverAssignee=:did";
 $query = $dbh -> prepare($sql);
 $query-> bindParam(':did', $did, PDO::PARAM_STR);
 $query->execute();

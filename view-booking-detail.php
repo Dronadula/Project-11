@@ -9,26 +9,27 @@ if(isset($_POST['submit']))
   {
     
     $eid=$_GET['editid'];
-    $comid=$_GET['comid'];
+    $bookid=$_GET['bookid'];
     $status=$_POST['status'];
    $remark=$_POST['remark'];
- 
+   $assignee=$_POST['assignee'];
 
-    $sql="insert into tblcomtracking(ComplainNumber,Remark,Status) value(:comid,:remark,:status)";
+    $sql="insert into tbltracking(BookingNumber,Remark,Status) value(:bookid,:remark,:status)";
     $query=$dbh->prepare($sql);
-$query->bindParam(':comid',$comid,PDO::PARAM_STR); 
+$query->bindParam(':bookid',$bookid,PDO::PARAM_STR); 
     $query->bindParam(':remark',$remark,PDO::PARAM_STR); 
     $query->bindParam(':status',$status,PDO::PARAM_STR); 
        $query->execute();
-      $sql= "update tbllodgedcomplain set Status=:status,Remark=:remark where ID=:eid";
+      $sql= "update tblbook set Status=:status,Remark=:remark where ID=:eid";
 
     $query=$dbh->prepare($sql);
+   
 $query->bindParam(':status',$status,PDO::PARAM_STR);
 $query->bindParam(':remark',$remark,PDO::PARAM_STR);
 $query->bindParam(':eid',$eid,PDO::PARAM_STR);
  $query->execute();
  echo '<script>alert("Remark has been updated")</script>';
- echo "<script>window.location.href ='all-complain.php'</script>";
+ echo "<script>window.location.href ='total-request.php'</script>";
 }
 
 
@@ -38,7 +39,7 @@ $query->bindParam(':eid',$eid,PDO::PARAM_STR);
 
 <head>
   
-    <title>Garbage Management System: View Complain</title>
+    <title>Vehicle Break Down Assistance Management System: View Request</title>
 
     <link rel="stylesheet" href="../assets/vendor/themify-icons/themify-icons.css">
     <link rel="stylesheet" href="../assets/vendor/fontawesome/css/font-awesome.min.css">
@@ -59,20 +60,20 @@ $query->bindParam(':eid',$eid,PDO::PARAM_STR);
 
         <div class="page">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <a class="navbar-brand" href="javascript:void(0);">View Lodged Complain</a>
+                <a class="navbar-brand" href="javascript:void(0);">View Booking Request</a>
             </nav>
             <div class="container-fluid">            
                 <div class="row clearfix">
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="header">
-                                <h2><strong>View Lodged</strong> Complain </h2>
+                                <h2><strong>View Booking</strong> Request </h2>
                             </div>
                             <div class="body">
                                 <div class="table-responsive">
                                     <?php
                   $eid=$_GET['editid'];
-$sql="SELECT tbllodgedcomplain.ComplainNumber,tbllodgedcomplain.Area,tbllodgedcomplain.Locality,tbllodgedcomplain.Landmark,tbllodgedcomplain.Address,tbllodgedcomplain.Photo,tbllodgedcomplain.ID as compid,tbllodgedcomplain.Status,tbllodgedcomplain.ComplainDate,tbllodgedcomplain.Remark,tbllodgedcomplain.AssignTo,tbluser.ID as uid,tbluser.FullName,tbluser.MobileNumber,tbluser.Email from tbllodgedcomplain join tbluser on tbluser.ID=tbllodgedcomplain.UserID  where tbllodgedcomplain.ID=:eid";
+$sql="SELECT * from tblbook  where ID=:eid";
 $query = $dbh -> prepare($sql);
 $query-> bindParam(':eid', $eid, PDO::PARAM_STR);
 $query->execute();
@@ -85,47 +86,30 @@ foreach($results as $row)
 {               ?>
                                     <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                        <tr>
-    <th style="color: orange;">Complain Number</th>
-    <td colspan="4" style="color: orange;font-weight: bold;"><?php  echo $bookingno=($row->ComplainNumber);?></td>
+    <th style="color: orange;">Booking Number</th>
+    <td colspan="4" style="color: orange;font-weight: bold;"><?php  echo $bookingno=($row->BookingNumber);?></td>
    
   </tr>
   <tr>
-    <th>Name</th>
-    <td><?php  echo $row->FullName;?></td>
-     <th>Email</th>
+    <th>Email</th>
     <td><?php  echo $row->Email;?></td>
+     <th>Name</th>
+    <td><?php  echo $row->Name;?></td>
     
   </tr>
    <tr>
-    <th>Mobile Number</th>
-    <td><?php  echo $row->MobileNumber;?></td>
-    <th>Address of Garbage</th>
-    <td><?php  echo $row->Address;?></td>
+    <th>Destination</th>
+    <td><?php  echo $row->Destination;?></td>
+    <th>Pickup Location</th>
+    <td><?php  echo $row->PickupLoc;?></td>
     
   </tr>
   <tr>
-    <th>Area</th>
-    <td><?php  echo $row->Area;?></td>
-    <th>Locality</th>
-    <td><?php  echo $row->Locality;?></td>
+    <th>Pickup Time</th>
+    <td><?php  echo $row->PickupTime;?></td>
+    <th>Pickup Date</th>
+    <td><?php  echo $row->PickupDate;?></td>
     
-  </tr>
-  <tr>
-    <th>Landmark</th>
-    <td><?php  echo $row->Landmark;?></td>
-    <th>Note</th>
-    <?php if($row->Note==""){ ?>
-
-                     <td><?php echo "No Notes"; ?></td>
-<?php } else { ?>                  <td><?php  echo htmlentities($row->Note);?>
-                  </td>
-                  <?php } ?>
-    
-    
-  </tr>
-  <tr>
-    <th>Image</th>
-    <td colspan="4"><img src="../user/images/<?php echo $row->Photo;?>" width="200" height="150" value="<?php  echo $row->Photo;?>"></td>
   </tr>
   <tr>
     <th >Assign To</th>
@@ -135,40 +119,30 @@ foreach($results as $row)
 <?php } else { ?>                  <td><?php  echo htmlentities($row->AssignTo);?>
                   </td>
                   <?php } ?>  
-                   <th>Complain Date</th>
-    <td><?php  echo $row->ComplainDate;?></td>     
+                  <th>Date of Request</th>
+    <td><?php  echo $row->DateofRequest;?></td>     
     
   </tr>
    <tr>
-    <th> Complain Final Status</th>
+    <th>Order Final Status</th>
    <td> <?php  $status=$row->Status;
     
-if($row->Status=="Approved")
+if($row->Status=="On The Way")
 {
-  echo "Your request has been approved";
+  echo "Driver is on the way";
 }
 
-if($row->Status=="Rejected")
-{
- echo "Your request has been cancelled";
-}
-if($row->Status=="On the way")
-{
- echo "Driver is on the way";
-}
 if($row->Status=="Completed")
 {
- echo "Garbage has been collected";
+ echo "Your request has been completed";
 }
 
-if($row->Status=="")
-{
-  echo "Not Response Yet";
-}
+
+
 
 
      ;?></td>
-    <th>Admin Remark</th>
+    <th>Driver Remark</th>
     <?php if($row->Status==""){ ?>
 
                      <td  colspan="4"><?php echo "Not Updated Yet"; ?></td>
@@ -182,11 +156,11 @@ if($row->Status=="")
                                             
                                     </table>
                                     <?php 
-$comid=$_GET['comid']; 
+$bookid=$_GET['bookid']; 
    if($status!=""){
-$ret="select tblcomtracking.Remark,tblcomtracking.Status,tblcomtracking.RemarkDate from tblcomtracking where tblcomtracking.ComplainNumber=:comid";
+$ret="select tbltracking.Remark,tbltracking.Status,tbltracking.UpdationDate from tbltracking where tbltracking.BookingNumber =:bookid";
 $query = $dbh -> prepare($ret);
-$query-> bindParam(':comid', $comid, PDO::PARAM_STR);
+$query-> bindParam(':bookid', $bookid, PDO::PARAM_STR);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);
 $cnt=1;
@@ -209,7 +183,7 @@ foreach($results as $row)
  <td><?php  echo $row->Remark;?></td> 
   <td><?php  echo $row->Status;
 ?></td> 
-   <td><?php  echo $row->RemarkDate;?></td> 
+   <td><?php  echo $row->UpdationDate;?></td> 
 </tr>
 <?php $cnt=$cnt+1;} ?>
 </table>
@@ -218,7 +192,7 @@ foreach($results as $row)
 
 <?php 
 
-if ($status=="Approved" || $status=="On the way"){
+if ($status=="Approved" || $status=="On The Way"){
 ?> 
 <p align="center"  style="padding-top: 20px">                            
  <button class="btn btn-primary waves-effect waves-light w-lg" data-toggle="modal" data-target="#myModal">Take Action</button></p>  
@@ -244,19 +218,16 @@ if ($status=="Approved" || $status=="On the way"){
     <th>Remark :</th>
     <td>
     <textarea name="remark" placeholder="Remark" rows="12" cols="14" class="form-control wd-450" required="true"></textarea></td>
-  </tr>
+  </tr> 
+   
+ 
   <tr>
     <th>Status :</th>
     <td>
 
    <select name="status" class="form-control wd-450" required="true" >
-
-    <?php if($status=='Approved'){?>
-     <option value="On the way" selected="true">On the way</option>
-     <option value="Completed">Completed</option>
- <?php } elseif ($status=='On the way') { ?>
-<option value="Completed">Completed</option>
- <?php }?>
+     <option value="On The Way" selected="true">On the way</option>
+     <option value="Completed">Task Completed</option>
    </select></td>
   </tr>
 </table>

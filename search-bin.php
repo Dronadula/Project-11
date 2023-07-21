@@ -2,7 +2,7 @@
 session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
-if (strlen($_SESSION['vamsaid']==0)) {
+if (strlen($_SESSION['vamsid']==0)) {
   header('location:logout.php');
   } else{
 
@@ -89,10 +89,10 @@ $sdata=$_POST['searchdata'];
                                         <tbody>
                                             <tr>
                                                <?php
-                                               
-$sql="SELECT * from  tblbin where BinID like '%$sdata%'";
+                                               $did=$_SESSION['vamsdid'];
+$sql="SELECT * from  tblbin where BinID like '%$sdata%' && DriverAssignee=:did";
 $query = $dbh -> prepare($sql);
-
+$query-> bindParam(':did', $did, PDO::PARAM_STR);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);
 

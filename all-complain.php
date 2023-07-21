@@ -1,8 +1,8 @@
 <?php
 session_start();
-error_reporting(0);
+//error_reporting(0);
 include('includes/dbconnection.php');
-if (strlen($_SESSION['vamsaid']==0)) {
+if (strlen($_SESSION['vamsid']==0)) {
   header('location:logout.php');
   } else{
 
@@ -14,7 +14,7 @@ if (strlen($_SESSION['vamsaid']==0)) {
 
 <head>
   
-    <title>Garbage Management System: All Lodged Complain</title>
+    <title>Garbage Management System: All Assign Lodged Complain</title>
 
     <link rel="stylesheet" href="../assets/vendor/themify-icons/themify-icons.css">
     <link rel="stylesheet" href="../assets/vendor/fontawesome/css/font-awesome.min.css">
@@ -35,14 +35,14 @@ if (strlen($_SESSION['vamsaid']==0)) {
 
         <div class="page">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <a class="navbar-brand" href="javascript:void(0);">All Lodged Complain</a>
+                <a class="navbar-brand" href="javascript:void(0);">All Assign Lodged Complain</a>
             </nav>
             <div class="container-fluid">            
                 <div class="row clearfix">
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="header">
-                                <h2><strong>All Lodged</strong> Complain </h2>
+                                <h2><strong>All Assign</strong> Lodged Complain </h2>
                             </div>
                             <div class="body">
                                 <div class="table-responsive">
@@ -60,7 +60,7 @@ if (strlen($_SESSION['vamsaid']==0)) {
                                         </thead>
                                         <tfoot>
                                             <tr>
-                                              <th>S.No</th>
+                                               <th>S.No</th>
                                         <th>Complain Number</th>
                                         <th>Name</th>
                                         <th>Mobile Number</th>
@@ -72,17 +72,19 @@ if (strlen($_SESSION['vamsaid']==0)) {
                                         <tbody>
                                             <tr>
                                                <?php
-$sql="SELECT tbllodgedcomplain.ComplainNumber,tbllodgedcomplain.AssignTo,tbllodgedcomplain.ID as compid,tbllodgedcomplain.Status,tbluser.ID as uid,tbluser.FullName,tbluser.MobileNumber,tbluser.Email from tbllodgedcomplain join tbluser on tbluser.ID=tbllodgedcomplain.UserID";
+                                                $did=$_SESSION['vamsdid'];
+$sql="SELECT tbllodgedcomplain.ComplainNumber,tbllodgedcomplain.AssignTo,tbllodgedcomplain.ID as compid,tbllodgedcomplain.Status,tbluser.ID as uid,tbluser.FullName,tbluser.MobileNumber,tbluser.Email from tbllodgedcomplain join tbluser on tbluser.ID=tbllodgedcomplain.UserID where tbllodgedcomplain.AssignTo=:did";
 $query = $dbh -> prepare($sql);
+$query-> bindParam(':did', $did, PDO::PARAM_STR);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);
 
-$cnt=1;
+
 if($query->rowCount() > 0)
 {
 foreach($results as $row)
 {               ?>
-                                              <td><?php echo htmlentities($cnt);?></td>
+                                             <td><?php echo htmlentities($cnt);?></td>
                                         <td><?php  echo htmlentities($row->ComplainNumber);?></td>
                                         <td><?php  echo htmlentities($row->FullName);?></td>
                                         <td><?php  echo htmlentities($row->MobileNumber);?></td>
@@ -94,7 +96,8 @@ foreach($results as $row)
                   </td>
                   <?php } ?>         
                  
-                                        <td><a href="view-complain-detail.php?editid=<?php echo htmlentities ($row->compid);?>&&comid=<?php echo htmlentities ($row->ComplainNumber);?>" class="btn btn-primary">View</a></td>
+                                        <td>
+        <a href="view-complain-detail.php?editid=<?php echo htmlentities ($row->compid);?>&&comid=<?php echo htmlentities ($row->ComplainNumber);?>" class="btn btn-primary">View</a></td>
                                             </tr>
                                          <?php $cnt=$cnt+1;}} ?> 
                                         </tbody>

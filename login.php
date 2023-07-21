@@ -5,34 +5,22 @@ include('includes/dbconnection.php');
 
 if(isset($_POST['login'])) 
   {
-    $username=$_POST['username'];
+    $did=$_POST['did'];
     $password=md5($_POST['password']);
-    $sql ="SELECT ID FROM tbladmin WHERE UserName=:username and Password=:password";
+    $sql ="SELECT ID, DriverID FROM tbldriver WHERE DriverID=:did and Password=:password";
     $query=$dbh->prepare($sql);
-    $query-> bindParam(':username', $username, PDO::PARAM_STR);
+    $query->bindParam(':did',$did,PDO::PARAM_STR);
 $query-> bindParam(':password', $password, PDO::PARAM_STR);
     $query-> execute();
     $results=$query->fetchAll(PDO::FETCH_OBJ);
     if($query->rowCount() > 0)
 {
 foreach ($results as $result) {
-$_SESSION['vamsaid']=$result->ID;
-}
+$_SESSION['vamsid']=$result->ID;
+$_SESSION['vamsdid']=$result->DriverID;
 
-  if(!empty($_POST["remember"])) {
-//COOKIES for username
-setcookie ("user_login",$_POST["username"],time()+ (10 * 365 * 24 * 60 * 60));
-//COOKIES for password
-setcookie ("userpassword",$_POST["password"],time()+ (10 * 365 * 24 * 60 * 60));
-} else {
-if(isset($_COOKIE["user_login"])) {
-setcookie ("user_login","");
-if(isset($_COOKIE["userpassword"])) {
-setcookie ("userpassword","");
-        }
-      }
 }
-$_SESSION['login']=$_POST['username'];
+$_SESSION['login']=$_POST['did'];
 echo "<script type='text/javascript'> document.location ='dashboard.php'; </script>";
 } else{
 echo "<script>alert('Invalid Details');</script>";
@@ -76,24 +64,18 @@ echo "<script>alert('Invalid Details');</script>";
                         <div class="body">
                             <form class="form-auth-small" action="" method="post">
                                 <div class="form-group">
-                                    <label for="signin-email" class="control-label sr-only">User Name</label>
-                                    <input type="text" class="form-control" placeholder="User Name" required="true" name="username" value="<?php if(isset($_COOKIE["user_login"])) { echo $_COOKIE["user_login"]; } ?>" >
+                                    <label for="signin-email" class="control-label sr-only">Identity Number</label>
+                                    <input type="text" class="form-control" placeholder="Enter your ID" required="true" name="did" value="" >
                                 </div>
                                 <div class="form-group">
                                     <label for="signin-password" class="control-label sr-only">Password</label>
-                                    <input type="password" class="form-control" placeholder="Password" name="password" required="true" value="<?php if(isset($_COOKIE["userpassword"])) { echo $_COOKIE["userpassword"]; } ?>">
+                                    <input type="password" class="form-control" placeholder="Password" name="password" required="true" value="">
                                 </div>
-                                <div class="form-group clearfix">
-                                    <label class="fancy-checkbox element-left">
-                                        <input type="checkbox" id="remember" name="remember" <?php if(isset($_COOKIE["user_login"])) { ?> checked <?php } ?>>
-                                        <span>Remember me</span>
-                                    </label>								
-                                </div>
+                                
                                 <button type="submit" class="btn btn-primary btn-lg btn-block" name="login">LOGIN</button>
                                 <div class="bottom">
                                     <span class="helper-text m-b-10"><i class="fa fa-lock"></i> <a href="forgot-password.php">Forgot password?</a></span>
-                                    <a href="../index.php">Back Home!!</a>
-                                   
+                                   <a href="../index.php">Back Home!!</a>
                                 </div>
                             </form>
                         </div>

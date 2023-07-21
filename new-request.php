@@ -14,7 +14,7 @@ if (strlen($_SESSION['vamsid']==0)) {
 
 <head>
   
-    <title>Garbage Management System: Garbage bin cleaned</title>
+    <title>Garbage Management System: Assign Garbage Bin</title>
 
     <link rel="stylesheet" href="../assets/vendor/themify-icons/themify-icons.css">
     <link rel="stylesheet" href="../assets/vendor/fontawesome/css/font-awesome.min.css">
@@ -35,14 +35,14 @@ if (strlen($_SESSION['vamsid']==0)) {
 
         <div class="page">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <a class="navbar-brand" href="javascript:void(0);">Garbage bin cleaned</a>
+                <a class="navbar-brand" href="javascript:void(0);">Assign Garbage Bin</a>
             </nav>
             <div class="container-fluid">            
                 <div class="row clearfix">
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="header">
-                                <h2>Garbage bin cleaned </h2>
+                                <h2><strong>Assign</strong> Garbage Bin </h2>
                             </div>
                             <div class="body">
                                 <div class="table-responsive">
@@ -73,7 +73,7 @@ if (strlen($_SESSION['vamsid']==0)) {
                                             <tr>
                                                <?php
                                                 $did=$_SESSION['vamsdid'];
-$sql="SELECT * from  tblbin where Status='Completed' && DriverAssignee=:did";
+$sql="SELECT * from  tblbin where Status is null && DriverAssignee=:did";
 $query = $dbh -> prepare($sql);
 $query-> bindParam(':did', $did, PDO::PARAM_STR);
 $query->execute();

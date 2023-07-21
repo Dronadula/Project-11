@@ -2,7 +2,7 @@
 session_start();
 //error_reporting(0);
 include('includes/dbconnection.php');
-if (strlen($_SESSION['vamsaid']==0)) {
+if (strlen($_SESSION['vamsid']==0)) {
   header('location:logout.php');
   } else{
 
@@ -90,10 +90,10 @@ $sdata=$_POST['searchdata'];
                                         <tbody>
                                             <tr>
                                                <?php
-                                               
-$sql="SELECT tbllodgedcomplain.ComplainNumber,tbllodgedcomplain.AssignTo,tbllodgedcomplain.ID as compid,tbllodgedcomplain.Status,tbluser.ID as uid,tbluser.FullName,tbluser.MobileNumber,tbluser.Email from tbllodgedcomplain join tbluser on tbluser.ID=tbllodgedcomplain.UserID where tbllodgedcomplain.ComplainNumber like '%$sdata%'";
+                                                $did=$_SESSION['vamsdid'];
+$sql="SELECT tbllodgedcomplain.ComplainNumber,tbllodgedcomplain.AssignTo,tbllodgedcomplain.ID as compid,tbllodgedcomplain.Status,tbluser.ID as uid,tbluser.FullName,tbluser.MobileNumber,tbluser.Email from tbllodgedcomplain join tbluser on tbluser.ID=tbllodgedcomplain.UserID where tbllodgedcomplain.ComplainNumber like '%$sdata%' && tbllodgedcomplain.AssignTo=:did";
 $query = $dbh -> prepare($sql);
-
+$query-> bindParam(':did', $did, PDO::PARAM_STR);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);
 

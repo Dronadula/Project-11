@@ -2,21 +2,23 @@
 session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
-if (strlen($_SESSION['vamsaid']==0)) {
+if (strlen($_SESSION['vamsid']==0)) {
   header('location:logout.php');
   } else{
     if(isset($_POST['submit']))
   {
-    $adminid=$_SESSION['vamsaid'];
-    $AName=$_POST['adminname'];
+    $did=$_SESSION['vamsid'];
+    $name=$_POST['name'];
   $mobno=$_POST['mobilenumber'];
   $email=$_POST['email'];
-  $sql="update tbladmin set AdminName=:adminname,MobileNumber=:mobilenumber,Email=:email where ID=:aid";
+  $address=$_POST['address'];
+  $sql="update tbldriver set Name=:name,MobileNumber=:mobilenumber,Email=:email,Address=:address where ID=:did";
      $query = $dbh->prepare($sql);
-     $query->bindParam(':adminname',$AName,PDO::PARAM_STR);
+     $query->bindParam(':name',$name,PDO::PARAM_STR);
      $query->bindParam(':email',$email,PDO::PARAM_STR);
      $query->bindParam(':mobilenumber',$mobno,PDO::PARAM_STR);
-     $query->bindParam(':aid',$adminid,PDO::PARAM_STR);
+     $query->bindParam(':address',$address,PDO::PARAM_STR);
+     $query->bindParam(':did',$did,PDO::PARAM_STR);
 $query->execute();
 
         echo '<script>alert("Profile has been updated")</script>';
@@ -47,7 +49,7 @@ $query->execute();
 
         <div class="page">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <a class="navbar-brand" href="javascript:void(0);">Admin Profile</a>
+                <a class="navbar-brand" href="javascript:void(0);">Driver Profile</a>
                
             </nav>
             <div class="container-fluid">
@@ -55,14 +57,15 @@ $query->execute();
                     <div class="col-md-12">
                         <div class="card">
                             <div class="header">
-                                <h2>Admin Profile</h2>
+                                <h2>Driver Profile</h2>
                             </div>
                             <div class="body">
                                 <form id="" method="post" novalidate>
                                     <?php
-
-$sql="SELECT * from  tbladmin";
+$did=$_SESSION['vamsid'];
+$sql="SELECT * from  tbldriver where ID=:did";
 $query = $dbh -> prepare($sql);
+$query->bindParam(':did',$did,PDO::PARAM_STR);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);
 $cnt=1;
@@ -71,12 +74,12 @@ if($query->rowCount() > 0)
 foreach($results as $row)
 {               ?>
                                     <div class="form-group">
-                                        <label>Admin Name</label>
-                                        <input type="text" class="form-control" id="exampleTextInput1" name="adminname" value="<?php  echo $row->AdminName;?>" required='true'>
+                                        <label>Your ID</label>
+                                        <input type="text" class="form-control" id="exampleTextInput1" name="" value="<?php  echo $row->DriverID;?>" readonly='true'>
                                     </div>
                                     <div class="form-group">
-                                        <label>User Name</label>
-                                       <input type="text" class="form-control" id="email2" name="username" value="<?php  echo $row->UserName;?>" readonly="true">
+                                        <label>Name</label>
+                                       <input type="text" class="form-control" id="email2" name="name" value="<?php  echo $row->Name;?>" required="true">
                                     </div>
                                     <div class="form-group">
                                         <label>Email</label>
@@ -87,8 +90,12 @@ foreach($results as $row)
                                         <input type="text" class="form-control" id="email2" name="mobilenumber" value="<?php  echo $row->MobileNumber;?>" required='true' maxlength='10'>
                                     </div>
                                     <div class="form-group">
-                                        <label>Registration Date</label>
-                                        <input type="text" class="form-control" id="email2" name="" value="<?php  echo $row->AdminRegdate;?>" readonly="true">
+                                        <label>Address</label>
+                                       <textarea type="text" class="form-control" id="address" name="address" value="<?php  echo $row->UserName;?>" required="true"><?php  echo $row->Address;?></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Joining Date</label>
+                                        <input type="text" class="form-control" id="email2" name="" value="<?php  echo $row->JoiningDate;?>" readonly="true">
                                     </div>
                                     
                                     

@@ -2,10 +2,35 @@
 session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
-if (strlen($_SESSION['vamsaid']==0)) {
+if (strlen($_SESSION['vamsid']==0)) {
   header('location:logout.php');
   } else{
+if(isset($_POST['submit']))
+  {
+    
+    $eid=$_GET['editid'];
+    $binid=$_GET['binid'];
+    $status=$_POST['status'];
+   $remark=$_POST['remark'];
+   $assignee=$_POST['assignee'];
 
+    $sql="insert into tbltracking(BinID,Remark,Status) value(:binid,:remark,:status)";
+    $query=$dbh->prepare($sql);
+$query->bindParam(':binid',$binid,PDO::PARAM_STR); 
+    $query->bindParam(':remark',$remark,PDO::PARAM_STR); 
+    $query->bindParam(':status',$status,PDO::PARAM_STR); 
+       $query->execute();
+      $sql= "update tblbin set Status=:status,Remark=:remark where ID=:eid";
+
+    $query=$dbh->prepare($sql);
+   
+$query->bindParam(':status',$status,PDO::PARAM_STR);
+$query->bindParam(':remark',$remark,PDO::PARAM_STR);
+$query->bindParam(':eid',$eid,PDO::PARAM_STR);
+ $query->execute();
+ echo '<script>alert("Remark has been updated")</script>';
+ echo "<script>window.location.href ='total-request.php'</script>";
+}
 
 
   ?>
@@ -14,7 +39,7 @@ if (strlen($_SESSION['vamsaid']==0)) {
 
 <head>
   
-    <title>Vehicle Break Down Assistance Management System: Bin Cleaning Report</title>
+    <title>Garbage Management System: View Bin Details</title>
 
     <link rel="stylesheet" href="../assets/vendor/themify-icons/themify-icons.css">
     <link rel="stylesheet" href="../assets/vendor/fontawesome/css/font-awesome.min.css">
@@ -35,14 +60,14 @@ if (strlen($_SESSION['vamsaid']==0)) {
 
         <div class="page">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <a class="navbar-brand" href="javascript:void(0);">Bin Cleaning Report</a>
+                <a class="navbar-brand" href="javascript:void(0);">View Bin Assign</a>
             </nav>
             <div class="container-fluid">            
                 <div class="row clearfix">
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="header">
-                                <h2>Bin Cleaning Report </h2>
+                                <h2><strong>View Bin Assign</strong> </h2>
                             </div>
                             <div class="body">
                                 <div class="table-responsive">
@@ -168,7 +193,54 @@ foreach($results as $row)
 <?php  }  
 ?>
 
+<?php 
 
+if ($status=="" || $status=="On The Way"){
+?> 
+<p align="center"  style="padding-top: 20px">                            
+ <button class="btn btn-primary waves-effect waves-light w-lg" data-toggle="modal" data-target="#myModal">Take Action</button></p>  
+
+<?php } ?>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content">
+      <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Take Action</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                <table class="table table-bordered table-hover data-tables">
+
+                                <form method="post" name="submit">
+
+                                
+                               
+     <tr>
+    <th>Remark :</th>
+    <td>
+    <textarea name="remark" placeholder="Remark" rows="12" cols="14" class="form-control wd-450" required="true"></textarea></td>
+  </tr> 
+   
+ 
+  <tr>
+    <th>Status :</th>
+    <td>
+
+   <select name="status" class="form-control wd-450" required="true" >
+     <option value="On The Way" selected="true">On the way</option>
+     <option value="Completed">Garbage Collected</option>
+   </select></td>
+  </tr>
+</table>
+</div>
+<div class="modal-footer">
+ <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+ <button type="submit" name="submit" class="btn btn-primary">Update</button>
+  
+  </form>
+  
 
 </div>
 

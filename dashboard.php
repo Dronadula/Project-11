@@ -2,7 +2,7 @@
 session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
-if (strlen($_SESSION['vamsaid']==0)) {
+if (strlen($_SESSION['vamsid']==0)) {
   header('location:logout.php');
   } else{
 
@@ -37,140 +37,124 @@ if (strlen($_SESSION['vamsaid']==0)) {
         </nav>
         <div class="container-fluid">
             <div class="row clearfix">
-                <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="card widget_2 big_icon traffic">
                         <div class="body" style="border:solid #000 1px">
                             <?php 
-                        $sql2 ="SELECT * from  tbllodgedcomplain where Status is null ";
-$query2 = $dbh -> prepare($sql2);
-$query2->execute();
-$results2=$query2->fetchAll(PDO::FETCH_OBJ);
-$totnewreq=$query2->rowCount();
+                         $did=$_SESSION['vamsdid'];
+$sql1 ="SELECT * from  tbllodgedcomplain where AssignTo=:did ";
+$query1 = $dbh -> prepare($sql1);
+$query1-> bindParam(':did', $did, PDO::PARAM_STR);
+$query1->execute();
+$results1=$query1->fetchAll(PDO::FETCH_OBJ);
+$totassrequest=$query1->rowCount();
 ?>
-                            <h6>New Lodged Complain</h6>
-                            <h2><?php echo htmlentities($totnewreq);?></h2>
-                           <a href="new-complain.php"><small> View Detail</small></a>
+                            <h6 style="color: red;">Total Assign Complain</h6>
+                            <h2><?php echo htmlentities($totassrequest);?></h2>
+                            <a href="all-complain.php"><small> View Detail</small></a>
+                          
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="card widget_2 big_icon sales">
                         <div class="body" style="border:solid #000 1px">
                              <?php 
-                        $sql2 ="SELECT * from  tbllodgedcomplain where Status='Approved' ";
-$query2 = $dbh -> prepare($sql2);
-$query2->execute();
-$results2=$query2->fetchAll(PDO::FETCH_OBJ);
-$totappreq=$query2->rowCount();
+                         $did=$_SESSION['vamsdid'];
+$sql ="SELECT * from  tbllodgedcomplain where Status='On The Way' && AssignTo=:did ";
+$query = $dbh -> prepare($sql);
+$query-> bindParam(':did', $did, PDO::PARAM_STR);
+$query->execute();
+$results=$query->fetchAll(PDO::FETCH_OBJ);
+$tototwcomp=$query->rowCount();
 ?>
-                            <h6>Assign Lodged Complain</h6>
-                            <h2><?php echo htmlentities($totappreq);?></h2>
-                           <a href="assign-complain.php"><small> View Detail</small></a>
+                            <h6 style="color: orange;">Inprogress Complain</h6>
+                           <h2><?php echo htmlentities($tototwcomp);?></h2>
+                            <a href="ontheway-complain.php"><small> View Detail</small></a>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="card widget_2 big_icon email">
                         <div class="body" style="border:solid #000 1px">
                             <?php 
-                        $sql2 ="SELECT * from  tbllodgedcomplain where Status='Rejected' ";
-$query2 = $dbh -> prepare($sql2);
-$query2->execute();
-$results2=$query2->fetchAll(PDO::FETCH_OBJ);
-$totrejreq=$query2->rowCount();
+                         $did=$_SESSION['vamsdid'];
+$sql ="SELECT * from  tbllodgedcomplain where Status='Completed' && AssignTo=:did ";
+$query = $dbh -> prepare($sql);
+$query-> bindParam(':did', $did, PDO::PARAM_STR);
+$query->execute();
+$results=$query->fetchAll(PDO::FETCH_OBJ);
+$totcompcomplain=$query->rowCount();
 ?>
-                          
-                             <h6>Rejected Lodged Complain</h6>
-                            <h2><?php echo htmlentities($totrejreq);?></h2>
-                           <a href="rejected-complain.php"><small> View Detail</small></a>
+                            <h6 style="color: green;">Completed Complain</h6>
+                           
+                            <h2><?php echo htmlentities($totcompcomplain);?></h2>
+                            <a href="completed-complain.php"><small> View Detail</small></a>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-12">
-                    <div class="card widget_2 big_icon domains">
-                        <div class="body" style="border:solid #000 1px">
-                             <?php 
-                        $sql2 ="SELECT * from  tbllodgedcomplain where Status='On The Way' ";
-$query2 = $dbh -> prepare($sql2);
-$query2->execute();
-$results2=$query2->fetchAll(PDO::FETCH_OBJ);
-$tototwreq=$query2->rowCount();
-?>
-                            <h6>Inprogress Lodged Complain</h6>
-                           <h2><?php echo htmlentities($tototwreq);?></h2>
-                           <a href="ontheway.php"><small> View Detail</small></a>
-                        </div>
-                    </div>
-                </div>
+             
             </div>
         </div>
-         <div class="container-fluid">
+        <div class="container-fluid">
             <div class="row clearfix">
-                <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="card widget_2 big_icon traffic">
                         <div class="body" style="border:solid #000 1px">
                             <?php 
-                        $sql2 ="SELECT * from  tbllodgedcomplain where Status='Completed' ";
-$query2 = $dbh -> prepare($sql2);
-$query2->execute();
-$results2=$query2->fetchAll(PDO::FETCH_OBJ);
-$totcomreq=$query2->rowCount();
+                         $did=$_SESSION['vamsdid'];
+$sql1 ="SELECT * from  tblbin where DriverAssignee=:did";
+$query1 = $dbh -> prepare($sql1);
+$query1-> bindParam(':did', $did, PDO::PARAM_STR);
+$query1->execute();
+$results1=$query1->fetchAll(PDO::FETCH_OBJ);
+$totassbin=$query1->rowCount();
 ?>
-                            <h6>Completed Lodged Complain</h6>
-                            <h2><?php echo htmlentities($totcomreq);?></h2>
-                           <a href="completed-complain.php"><small> View Detail</small></a>
+                            <h6 style="color: red;">Total Assign Garbage Bin</h6>
+                            <h2><?php echo htmlentities($totassbin);?></h2>
+                            <a href="total-request.php"><small> View Detail</small></a>
+                          
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="card widget_2 big_icon sales">
                         <div class="body" style="border:solid #000 1px">
-                            <?php 
-                        $sql1 ="SELECT * from  tbldriver";
-$query1 = $dbh -> prepare($sql1);
-$query1->execute();
-$results1=$query1->fetchAll(PDO::FETCH_OBJ);
-$totdriver=$query1->rowCount();
+                             <?php 
+                         $did=$_SESSION['vamsdid'];
+$sql ="SELECT * from  tblbin where Status='On The Way' && DriverAssignee=:did ";
+$query = $dbh -> prepare($sql);
+$query-> bindParam(':did', $did, PDO::PARAM_STR);
+$query->execute();
+$results=$query->fetchAll(PDO::FETCH_OBJ);
+$totinpro=$query->rowCount();
 ?>
-                            <h6>Total Drivers</h6>
-                            <h2><?php echo htmlentities($totdriver);?></h2>
-                           <a href="manage-driver.php"><small> View Detail</small></a>
+                            <h6 style="color: orange;">Inprogress</h6>
+                           <h2><?php echo htmlentities($totinpro);?></h2>
+                            <a href="ontheway.php"><small> View Detail</small></a>
                         </div>
                     </div>
                 </div>
-               <div class="col-lg-3 col-md-6 col-sm-12">
-                    <div class="card widget_2 big_icon sales">
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card widget_2 big_icon email">
                         <div class="body" style="border:solid #000 1px">
                             <?php 
-                        $sql1 ="SELECT * from  tblbin where Status='On The Way'";
-$query1 = $dbh -> prepare($sql1);
-$query1->execute();
-$results1=$query1->fetchAll(PDO::FETCH_OBJ);
-$totbininpro=$query1->rowCount();
+                         $did=$_SESSION['vamsdid'];
+$sql ="SELECT * from  tblbin where Status='Completed' && DriverAssignee=:did ";
+$query = $dbh -> prepare($sql);
+$query-> bindParam(':did', $did, PDO::PARAM_STR);
+$query->execute();
+$results=$query->fetchAll(PDO::FETCH_OBJ);
+$totcomp=$query->rowCount();
 ?>
-                            <h6>Bin Cleaning Inprogress</h6>
-                            <h2><?php echo htmlentities($totbininpro);?></h2>
-                           <a href="ontheway.php"><small> View Detail</small></a>
-                        </div>
-                    </div>
-                </div> 
-                <div class="col-lg-3 col-md-6 col-sm-12">
-                    <div class="card widget_2 big_icon sales">
-                        <div class="body" style="border:solid #000 1px">
-                            <?php 
-                        $sql1 ="SELECT * from  tblbin where Status='Completed'";
-$query1 = $dbh -> prepare($sql1);
-$query1->execute();
-$results1=$query1->fetchAll(PDO::FETCH_OBJ);
-$totcleaningcomp=$query1->rowCount();
-?>
-                            <h6>Cleaned Bin</h6>
-                            <h2><?php echo htmlentities($totcleaningcomp);?></h2>
-                           <a href="completed.php"><small> View Detail</small></a>
+                            <h6 style="color: green;">Garbage Cleaned</h6>
+                           
+                            <h2><?php echo htmlentities($totcomp);?></h2>
+                            <a href="completed.php"><small> View Detail</small></a>
                         </div>
                     </div>
                 </div>
-              
+             
             </div>
         </div>
     </div>    

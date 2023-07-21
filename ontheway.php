@@ -1,8 +1,8 @@
 <?php
 session_start();
-error_reporting(0);
+//error_reporting(0);
 include('includes/dbconnection.php');
-if (strlen($_SESSION['vamsaid']==0)) {
+if (strlen($_SESSION['vamsid']==0)) {
   header('location:logout.php');
   } else{
 
@@ -14,7 +14,7 @@ if (strlen($_SESSION['vamsaid']==0)) {
 
 <head>
   
-    <title>Garbage Management System: Driver is on the way for garbage</title>
+    <title>Garbage Management System: Driver is on the way for cleaning bin</title>
 
     <link rel="stylesheet" href="../assets/vendor/themify-icons/themify-icons.css">
     <link rel="stylesheet" href="../assets/vendor/fontawesome/css/font-awesome.min.css">
@@ -35,14 +35,14 @@ if (strlen($_SESSION['vamsaid']==0)) {
 
         <div class="page">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <a class="navbar-brand" href="javascript:void(0);">Driver is on the way for garbage</a>
+                <a class="navbar-brand" href="javascript:void(0);">Driver is on the way for cleaning bin</a>
             </nav>
             <div class="container-fluid">            
                 <div class="row clearfix">
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="header">
-                                <h2>Driver is on the way for garbage </h2>
+                                <h2>Driver is on the way for cleaning bin </h2>
                             </div>
                             <div class="body">
                                 <div class="table-responsive">
@@ -72,14 +72,14 @@ if (strlen($_SESSION['vamsaid']==0)) {
                                         <tbody>
                                             <tr>
                                                <?php
-                                               
-$sql="SELECT * from  tblbin where Status='On The Way'";
+                                                $did=$_SESSION['vamsdid'];
+$sql="SELECT * from  tblbin where Status='On The Way' && DriverAssignee=:did";
 $query = $dbh -> prepare($sql);
 $query-> bindParam(':did', $did, PDO::PARAM_STR);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);
 
-$cnt=1;
+
 if($query->rowCount() > 0)
 {
 foreach($results as $row)
